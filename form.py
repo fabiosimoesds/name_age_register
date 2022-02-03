@@ -8,13 +8,13 @@ ws = wb.worksheets[0]
 #MAIN MENU
 while True:
     title('MAIN MENU')
-    options('See list of People,Add new People,Exit')
+    options('See list of People,Add new People,Delete a Person,Exit')
     opti = readInt('Choose your Option: ')
 
 
 #READ THE LIST
     if opti == 1:
-        read = pd.read_excel('list_form.xlsx', usecols='B, C')
+        read = pd.read_excel('list_form.xlsx', usecols='B, C').sort_values(0, ascending=True)
         list_name = read[0].tolist()
         list_age = read[1].tolist()
         title('List of People')
@@ -26,13 +26,7 @@ while True:
 #NEW DATA ENTRY
     elif opti == 2:
         data = []
-        while True:
-            name = input('Name: ').strip().title()
-            if name.isnumeric():
-                print(f'\'{name}\' is not a name, please try again.')
-                continue
-            else:
-                break
+        name = readName('Name: ')
         age = readInt('Age: ')
         data.append(name)
         data.append(age)
@@ -42,6 +36,15 @@ while True:
         wb.save('list_form.xlsx')
         data.clear()
     elif opti == 3:
+        delet = readName('Type the name of the person you would like to delete: ')
+        read = pd.read_excel('list_form.xlsx', usecols='B')[0].str.find(delet)
+        for i, v in enumerate(read):
+            if v == 0:
+                rw = i + 2
+
+        ws.delete_rows(rw)
+        wb.save('list_form.xlsx')
+    elif opti == 4:
         break
     else:
         line('+', 40)
